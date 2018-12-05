@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Listado</h1>
+    </div>
+    <div class="form-group">
+        <a class="btn btn-primary" href="{% url 'departamento-add' %}" role="button">Agregar</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for c in object_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ c.nombre }}</td>
+                    <td>
+                        <a class="btn btn-primary" href="{% url 'departamento-edit' c.id %}" role="button">Edit</a>
+                        <a class="btn btn-danger" href="{% url 'departamento-delete' c.id %}" role="button">Delete</a>
+                    </td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
