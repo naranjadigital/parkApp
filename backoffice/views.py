@@ -89,11 +89,29 @@ class ApiProvinciaList(generics.ListCreateAPIView):
         if departamento_id is not None:
             queryset = queryset.filter(departamento__id=departamento_id)
 
-
         return queryset
 
 
 class ApiDistritoList(generics.ListCreateAPIView):
     queryset = Distrito.objects.all()
     serializer_class = DistritoSerializer
+
+
+class ApiEstacionamientoList(generics.ListCreateAPIView):
+    serializer_class = EstacionamientoSerializer
+
+    def get_queryset(self):
+
+        queryset = Estacionamiento.objects.all()
+
+        nombre = self.request.query_params.get('nombre', None)
+        if nombre is not None:
+            queryset = queryset.filter(nombre__contains=nombre)
+
+        return queryset
+
+
+class ApiEstacionamientoEdit(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = EstacionamientoSerializer
+    queryset = Estacionamiento.objects.all()
 

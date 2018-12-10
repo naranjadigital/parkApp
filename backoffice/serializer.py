@@ -19,3 +19,9 @@ class DistritoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Distrito
         fields = ('__all__')
+
+
+class EstacionamientoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Estacionamiento
+        fields = ('__all__')

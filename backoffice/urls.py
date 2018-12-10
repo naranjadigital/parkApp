@@ -19,5 +19,7 @@ urlpatterns = [
     path('api/v1/departamento/', ApiDepartamentoList.as_view()),
     path('api/v1/provincia/', ApiProvinciaList.as_view()),
     path('api/v1/distrito/', ApiDistritoList.as_view()),
+    path('api/v1/estacionamiento/', ApiEstacionamientoList.as_view()),
+    path('api/v1/estacionamiento/<int:pk>', ApiEstacionamientoEdit.as_view()),
 
 ]
