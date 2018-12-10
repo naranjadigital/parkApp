@@ -3,106 +3,97 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView, DetailView
+from rest_framework import generics
 
-from backoffice.forms import DepartamentoForm
+from backoffice.forms import *
 from backoffice.models import *
+from backoffice.serializer import *
 
 
-def DepartamentoList(request):
-    ctx = {'object_list': Departamento.objects.all()}
-    return render(request, 'departamento/list.html', ctx)
-
-
-def DepartamentoAdd(request):
-    if request.method == 'POST':
-        form = DepartamentoForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            form.save()
-            return redirect('departamento-list')
-        else:
-            ctx = {'form': form}
-            return render(request, 'departamento/add.html', ctx)
-
-    ctx = {'form': DepartamentoForm()}
-    return render(request, 'departamento/add.html', ctx)
-
-
-def DepartamentoDetail(request, pk):
-    departamento = Departamento.objects.get(pk=pk)
-    ctx = {'object': departamento}
-
-    return render(request, 'departamento/detail.html', ctx)
-
-
-def DepartamentoEdit(request, pk):
-    departamento = Departamento.objects.get(pk=pk)
-    if request.method == 'POST':
-        form = DepartamentoForm(request.POST, instance=departamento)
-        # check whether it's valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            form.save()
-            return redirect('departamento-list')
-        else:
-            ctx = {'form': form}
-            return render(request, 'departamento/add.html', ctx)
-
-    ctx = {'form': DepartamentoForm(instance=departamento)}
-    return render(request, 'departamento/edit.html', ctx)
-
-
-def DepartamentoDelete(request, pk):
-    departamento = Departamento.objects.get(pk=pk)
-    if request.method == 'POST':
-        departamento.delete()
-        return redirect('departamento-list')
-
-    ctx = {'object': departamento}
-    return render(request, 'departamento/delete.html', ctx)
-
-
-def Index(request):
-    ctx = {'msg' : 'Hola'}
-    return render(request, 'index.html', ctx)
-
-
-class IndexClass(TemplateView):
+class Index(TemplateView):
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['msg'] = 'Hola Con clase'
+        context['msg'] = 'Inicio'
         return context
 
 
-class DepartamentoListClass(ListView):
-    template_name = 'departamento-clases/list.html'
+class DepartamentoList(ListView):
+    template_name = 'departamento/list.html'
     model = Departamento
 
 
-class DepartamentoAddClass(CreateView):
-    template_name = 'departamento-clases/add.html'
-    model = Departamento
-    form_class = DepartamentoForm
-    success_url = reverse_lazy('departamento-class-list')
-
-
-class DepartamentoEditClass(UpdateView):
-    template_name = 'departamento-clases/edit.html'
+class DepartamentoAdd(CreateView):
+    template_name = 'base/add.html'
     model = Departamento
     form_class = DepartamentoForm
-    success_url = reverse_lazy('departamento-class-list')
+    success_url = reverse_lazy('bo:departamento-list')
 
 
-class DepartamentoDeleteClass(DeleteView):
-    template_name = 'departamento-clases/delete.html'
+class DepartamentoEdit(UpdateView):
+    template_name = 'base/edit.html'
     model = Departamento
-    success_url = reverse_lazy('departamento-class-list')
+    form_class = DepartamentoForm
+    success_url = reverse_lazy('bo:departamento-list')
 
 
-class DepartamentoDetailClass(DetailView):
-    template_name = 'departamento-clases/detail.html'
+class DepartamentoDelete(DeleteView):
+    template_name = 'departamento/delete.html'
     model = Departamento
+    success_url = reverse_lazy('bo:departamento-list')
+
+
+class DepartamentoDetail(DetailView):
+    template_name = 'departamento/detail.html'
+    model = Departamento
+
+
+class EstacionamientoList(ListView):
+    template_name = 'estacionamiento/list.html'
+    model = Estacionamiento
+
+
+class EstacionamientoAdd(CreateView):
+    template_name = 'estacionamiento/add_edit.html'
+    model = Estacionamiento
+    form_class = EstacionamientoForm
+    success_url = reverse_lazy('bo:estacionamiento-list')
+
+
+class EstacionamientoEdit(UpdateView):
+    template_name = 'estacionamiento/add_edit.html'
+    model = Estacionamiento
+    form_class = EstacionamientoForm
+    success_url = reverse_lazy('bo:estacionamiento-list')
+
+
+class ApiDepartamentoList(generics.ListCreateAPIView):
+    queryset = Departamento.objects.all()
+    serializer_class = DepartamentoSerializer
+
+
+class ApiProvinciaList(generics.ListCreateAPIView):
+    serializer_class = ProvinciaSerializer
+
+    def get_queryset(self):
+
+        queryset = Provincia.objects.all()
+
+        departamento = self.request.query_params.get('departamento', None)
+        if departamento is not None:
+            queryset = queryset.filter(departamento__nombre__contains=departamento)
+
+
+        departamento_id = self.request.query_params.get('departamento_id', None)
+        if departamento_id is not None:
+            queryset = queryset.filter(departamento__id=departamento_id)
+
+
+        return queryset
+
+
+class ApiDistritoList(generics.ListCreateAPIView):
+    queryset = Distrito.objects.all()
+    serializer_class = DistritoSerializer
+

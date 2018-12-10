@@ -14,25 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 from backoffice.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', Index, name='index'),
-    path('index/', IndexClass.as_view(), name='index'),
-
-    path('add/', DepartamentoAdd, name='departamento-add'),
-    path('list/', DepartamentoList, name='departamento-list'),
-    path('edit/<int:pk>', DepartamentoEdit, name='departamento-edit'),
-    path('delete/<int:pk>', DepartamentoDelete, name='departamento-delete'),
-    path('detail/<int:pk>', DepartamentoDetail, name='departamento-detail'),
-
-    path('add_class/', DepartamentoAddClass.as_view(), name='departamento-class-add'),
-    path('list_class/', DepartamentoListClass.as_view(), name='departamento-class-list'),
-    path('edit_class/<int:pk>', DepartamentoEditClass.as_view(), name='departamento-class-edit'),
-    path('delete_class/<int:pk>', DepartamentoDeleteClass.as_view(), name='departamento-class-delete'),
-    path('detail_class/<int:pk>', DepartamentoDetailClass.as_view(), name='departamento-class-detail'),
-
+    path('backoffice/', include('backoffice.urls'))
 ]

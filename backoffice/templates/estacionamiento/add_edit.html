@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Agregar</h1>
+    </div>
+    {{ form.instance }}
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            {{ field.label_tag }} {{ field }}
+            {{ field.errors }}
+        {% endfor %}
+        <br>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function () {
+
+            var departamento$ = $('#id_departamento').val();
+            var provincia$ = $('#id_provincia').val();
+            var distrito$ = $('#id_distrito').val();
+
+            {% if not form.instance %}
+
+                 console.log('ac');
+
+                $('#id_departamento').empty();
+                $('#id_provincia').empty();
+                $('#id_distrito').empty();
+
+            {% endif %}
+
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                url: '/backoffice/api/v1/departamento',
+                success: function (result) {
+                    $('#id_departamento').empty();
+                    $('#id_departamento').append($('<option>', {
+                        value: '',
+                        text: 'Selecciona el departamento'
+                    }));
+                    $.each(result, function (i, item) {
+                        $('#id_departamento').append($('<option>', {
+                            value: item.id,
+                            text: item.nombre
+                        }));
+                    });
+
+                }
+            });
+
+            $('#id_departamento').change(function () {
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    url: '/backoffice/api/v1/provincia/?departamento_id=' + $('#id_departamento').val(),
+                    success: function (result) {
+                        $('#id_provincia').empty();
+                        $('#id_provincia').append($('<option>', {
+                            value: '',
+                            text: 'Selecciona la provincia'
+                        }));
+                        $.each(result, function (i, item) {
+                            $('#id_provincia').append($('<option>', {
+                                value: item.id,
+                                text: item.nombre
+                            }));
+                        });
+
+                    }
+                });
+
+            });
+
+        });
+    </script>
+
+{% endblock js %}

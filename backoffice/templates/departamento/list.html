@@ -5,7 +5,7 @@
         <h1 class="h2">Listado</h1>
     </div>
     <div class="form-group">
-        <a class="btn btn-primary" href="{% url 'departamento-add' %}" role="button">Agregar</a>
+        <a class="btn btn-primary" href="{% url 'bo:departamento-add' %}" role="button">Agregar</a>
     </div>
 
     <div class="table-responsive">
@@ -23,8 +23,8 @@
                     <td>{{ forloop.counter }}</td>
                     <td>{{ c.nombre }}</td>
                     <td>
-                        <a class="btn btn-primary" href="{% url 'departamento-edit' c.id %}" role="button">Edit</a>
-                        <a class="btn btn-danger" href="{% url 'departamento-delete' c.id %}" role="button">Delete</a>
+                        <a class="btn btn-primary" href="{% url 'bo:departamento-edit' c.id %}" role="button">Edit</a>
+                        <a class="btn btn-danger" href="{% url 'bo:departamento-delete' c.id %}" role="button">Delete</a>
                     </td>
 
                 </tr>
