@@ -5,8 +5,8 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Agregar</h1>
     </div>
-    {{ form.instance }}
     <form method="post">
+
         {% csrf_token %}
         {% for field in form %}
             {{ field.label_tag }} {{ field }}
@@ -22,19 +22,13 @@
     <script>
         $(document).ready(function () {
 
-            var departamento$ = $('#id_departamento').val();
-            var provincia$ = $('#id_provincia').val();
-            var distrito$ = $('#id_distrito').val();
+            var departamento = $('#id_departamento').val();
+            var provincia = $('#id_provincia').val();
+            var distrito = $('#id_distrito').val();
 
-            {% if not form.instance %}
-
-                 console.log('ac');
-
-                $('#id_departamento').empty();
-                $('#id_provincia').empty();
-                $('#id_distrito').empty();
-
-            {% endif %}
+            $('#id_departamento').empty();
+            $('#id_provincia').empty();
+            $('#id_distrito').empty();
 
             $.ajax({
                 type: 'GET',
@@ -42,7 +36,6 @@
                 contentType: 'application/json; charset=utf-8',
                 url: '/backoffice/api/v1/departamento',
                 success: function (result) {
-                    $('#id_departamento').empty();
                     $('#id_departamento').append($('<option>', {
                         value: '',
                         text: 'Selecciona el departamento'
@@ -53,9 +46,11 @@
                             text: item.nombre
                         }));
                     });
-
+                    $("#id_departamento").val(departamento);
+                    $("#id_departamento").change();
                 }
             });
+
 
             $('#id_departamento').change(function () {
                 $.ajax({
@@ -75,7 +70,7 @@
                                 text: item.nombre
                             }));
                         });
-
+                        $("#id_provincia").val(provincia);
                     }
                 });
 

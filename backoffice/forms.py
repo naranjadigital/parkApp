@@ -18,7 +18,7 @@ class DepartamentoForm(forms.ModelForm):
         cleaned_data = super().clean()
         nombre = cleaned_data.get("nombre")
 
-        if len(nombre) < 2:
+        if len(nombre) < 4:
             self.add_error('nombre', 'Nombre muy pequeño')
 
         existe = Departamento.objects.filter(nombre__contains=nombre).exclude(id=self.instance.pk)
