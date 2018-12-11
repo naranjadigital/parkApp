@@ -20,5 +20,5 @@ from backoffice.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('backoffice/', include('backoffice.urls'))
+    path('', include('backoffice.urls'))
 ]

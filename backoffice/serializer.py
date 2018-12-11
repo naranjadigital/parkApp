@@ -22,6 +22,10 @@ class DistritoSerializer(serializers.ModelSerializer):
 
 
 class EstacionamientoSerializer(serializers.ModelSerializer):
+    departamento_nombre = serializers.CharField(source='departamento')
+    provincia_nombre = serializers.CharField(source='provincia')
+    distrito_nombre = serializers.CharField(source='distrito')
+
     class Meta:
         model = Estacionamiento
-        fields = ('__all__')
+        fields = ['nombre', 'departamento_nombre', 'provincia_nombre', 'distrito_nombre']
