@@ -1,16 +1,25 @@
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView, DetailView, FormView, \
+    RedirectView
 from rest_framework import generics
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 from backoffice.forms import *
 from backoffice.models import *
 from backoffice.serializer import *
 
 
-class Index(TemplateView):
+class Index(LoginRequiredMixin, TemplateView):
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs):
@@ -19,7 +28,7 @@ class Index(TemplateView):
         return context
 
 
-class DepartamentoList(ListView):
+class DepartamentoList(ListView, LoginRequiredMixin):
     template_name = 'departamento/list.html'
     model = Departamento
 
@@ -84,7 +93,6 @@ class ApiProvinciaList(generics.ListCreateAPIView):
         if departamento is not None:
             queryset = queryset.filter(departamento__nombre__contains=departamento)
 
-
         departamento_id = self.request.query_params.get('departamento_id', None)
         if departamento_id is not None:
             queryset = queryset.filter(departamento__id=departamento_id)
@@ -115,3 +123,26 @@ class ApiEstacionamientoEdit(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EstacionamientoSerializer
     queryset = Estacionamiento.objects.all()
 
+
+class LoginView(FormView):
+    form_class = AuthenticationForm
+    template_name = "login.html"
+    success_url = reverse_lazy("bo:index")
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     if request.user.is_authenticated:
+    #         return HttpResponseRedirect(self.get_success_url())
+    #     else:
+    #         return super(LoginView, self).dispatch(request, *args, **kwargs)
+    #
+    def form_valid(self, form):
+        login(self.request, form.get_user())
+        return super(LoginView, self).form_valid(form)
+
+
+class LogoutView(LoginRequiredMixin, RedirectView):
+    pattern_name = 'bo:index'
+
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return super(LogoutView, self).get(request, *args, **kwargs)

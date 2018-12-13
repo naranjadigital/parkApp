@@ -20,5 +20,6 @@ from backoffice.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('backoffice.urls'))
+    path('', include('backoffice.urls')),
+    path('api-auth/', include('rest_framework.urls'))
 ]

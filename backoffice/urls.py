@@ -1,6 +1,7 @@
 from django.urls import path
 
 from backoffice.views import *
+from django.contrib.auth import views as auth_views
 
 app_name = 'bo'
 
@@ -21,5 +22,8 @@ urlpatterns = [
     path('api/v1/distrito/', ApiDistritoList.as_view()),
     path('api/v1/estacionamiento/', ApiEstacionamientoList.as_view()),
     path('api/v1/estacionamiento/<int:pk>', ApiEstacionamientoEdit.as_view()),
+
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 
 ]
